@@ -1,14 +1,28 @@
 import mysql from 'mysql2/promise';
-import 'dotenv/config'
-import { ErrorTracker } from './error-tracker.js';
-// Create the connection to database
-const connection = await mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_ADMIN_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT
-});
+import 'dotenv/config';
+import { ErrorTracker } from './error-tracker.js'; // Optional
+
+async function connectToDatabase() {
+  try {
+    const connection = await mysql.createConnection({
+      host: process.env.DB_HOST,
+      user: process.env.DB_ADMIN_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT,
+    });
+
+    console.log('Database connected successfully');
+    return connection;
+  } catch (error) {
+    console.error('Database connection failed:', error.message);
+    ErrorTracker?.track(error); // Use your custom error tracker if applicable
+    throw error;
+  }
+}
+
+// Connect to the database
+const connection = await connectToDatabase();
 
 export class RegistersService {
     static async post({fecha_nacimiento, genero_id, programa_id, peso_kg, altura_m, imc_kg_m2}) {
