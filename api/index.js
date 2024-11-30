@@ -1,7 +1,7 @@
 import express, {json} from "express"
 import 'dotenv/config'
 import cors from 'cors'
-import { registersRouter } from "./registers-router.js"
+import { registersRouter } from "../registers-router.js"
 
 const app = express()
 const PORT = process.env.API_PORT ?? 3100
